@@ -42,22 +42,22 @@ jobs:
           sudo apt-get update -q
           sudo apt-get install -y --no-install-recommends \
             python3 python3-pip \
+            python3-zstandard \
             libdbus-glib-1-dev libgtk-3-dev \
             libx11-dev libxt-dev \
             nasm nodejs clang lld \
-            zip unzip
+            zip unzip watchman
 
       # ── 5. Bootstrap mach (Rust, cbindgen, etc.) ─────────────
       - name: Bootstrap
         run: |
           cd firefox
-          pip install zstandard
           python3 ./mach bootstrap \
             --application-choice browser
         env:
           SHELL: /bin/bash
           MOZ_NOSPAM: 1
-          MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE: none
+          MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE: system
       # ── 6. Apply your patches in filename order ───────────────
       - name: Apply patches
         run: |
