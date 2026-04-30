@@ -1,0 +1,145 @@
+diff --git a/browser/themes/linux/browser.css b/browser/themes/linux/browser.css
+index b82fa7229a..b6075c93be 100644
+--- a/browser/themes/linux/browser.css
++++ b/browser/themes/linux/browser.css
+@@ -1,3 +1,4 @@
++@import "zen-theme.css";
+ /* This Source Code Form is subject to the terms of the Mozilla Public
+  * License, v. 2.0. If a copy of the MPL was not distributed with this
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+diff --git a/browser/themes/linux/zen-theme.css b/browser/themes/linux/zen-theme.css
+new file mode 100644
+index 0000000000..9e2a34878f
+--- /dev/null
++++ b/browser/themes/linux/zen-theme.css
+@@ -0,0 +1,130 @@
++/* ── ZEN THEME ── imported by browser.css ── */
++
++:root {
++  --zen-bg:         #1a1a1f;
++  --zen-sidebar:    #141417;
++  --zen-surface:    #222228;
++  --zen-surface2:   #2a2a32;
++  --zen-border:     rgba(255,255,255,0.07);
++  --zen-text:       #e8e8f0;
++  --zen-muted:      rgba(255,255,255,0.38);
++  --zen-accent:     #a78bfa;
++  --zen-accent-dim: rgba(167,139,250,0.18);
++  --zen-radius:     10px;
++}
++
++/* ── Kill horizontal tab bar ── */
++#TabsToolbar {
++  visibility: collapse !important;
++  height: 0 !important;
++}
++
++/* ── Window background ── */
++:root, #main-window, #browser {
++  background-color: var(--zen-bg) !important;
++}
++
++/* ── Nav toolbar ── */
++#nav-bar {
++  background: var(--zen-bg) !important;
++  border-bottom: 1px solid var(--zen-border) !important;
++  box-shadow: none !important;
++  padding-block: 4px !important;
++}
++
++/* ── URL bar ── */
++#urlbar-background {
++  background: var(--zen-surface) !important;
++  border: 1px solid var(--zen-border) !important;
++  border-radius: var(--zen-radius) !important;
++  box-shadow: none !important;
++  transition: border-color 0.15s !important;
++}
++
++#urlbar[focused] #urlbar-background {
++  border-color: var(--zen-accent) !important;
++  box-shadow: 0 0 0 2px var(--zen-accent-dim) !important;
++}
++
++#urlbar-input { color: var(--zen-text) !important; font-size: 13px !important; }
++
++/* ── Buttons ── */
++#back-button, #forward-button, #stop-reload-button {
++  -moz-appearance: none !important;
++  background: transparent !important;
++  border: none !important;
++  border-radius: 7px !important;
++  padding: 4px !important;
++  opacity: 0.6;
++  transition: opacity 0.12s, background 0.12s !important;
++}
++#back-button:hover, #forward-button:hover, #stop-reload-button:hover {
++  background: var(--zen-surface) !important;
++  opacity: 1;
++}
++#back-button[disabled], #forward-button[disabled] { opacity: 0.25 !important; }
++
++/* ── Sidebar (Sidebery) ── */
++#sidebar-box {
++  background: var(--zen-sidebar) !important;
++  border-right: 1px solid var(--zen-border) !important;
++}
++#sidebar-header { display: none !important; }
++#sidebar { background: var(--zen-sidebar) !important; }
++#sidebar-splitter {
++  width: 3px !important;
++  background: var(--zen-border) !important;
++  border: none !important;
++}
++
++/* ── URL bar dropdown ── */
++#urlbar-results {
++  background: var(--zen-surface) !important;
++  border: 1px solid var(--zen-border) !important;
++  border-radius: var(--zen-radius) !important;
++  padding: 4px !important;
++}
++.urlbarView-row { border-radius: 7px !important; position: relative !important; }
++.urlbarView-row[selected], .urlbarView-row:hover {
++  background: var(--zen-surface2) !important;
++}
++.urlbarView-title, .urlbarView-url { color: var(--zen-text) !important; }
++.urlbarView-secondary { color: var(--zen-muted) !important; }
++.urlbarView-row[selected]::before {
++  content: '';
++  position: absolute;
++  left: 0; top: 20%; bottom: 20%;
++  width: 2.5px;
++  background: var(--zen-accent);
++  border-radius: 2px;
++}
++
++/* ── Context menus ── */
++menupopup, panel {
++  --panel-background: var(--zen-surface) !important;
++  --panel-border-color: var(--zen-border) !important;
++  --panel-color: var(--zen-text) !important;
++  border-radius: var(--zen-radius) !important;
++}
++menuitem { border-radius: 6px !important; padding-block: 5px !important; }
++menuitem:hover { background: var(--zen-surface2) !important; }
++menuseparator { border-color: var(--zen-border) !important; margin-block: 3px !important; }
++
++/* ── Find bar ── */
++#FindToolbar {
++  background: var(--zen-surface) !important;
++  border-top: 1px solid var(--zen-border) !important;
++  color: var(--zen-text) !important;
++}
++
++/* ── Scrollbars ── */
++scrollbar { width: 6px !important; height: 6px !important; }
++scrollbar thumb { background: rgba(255,255,255,0.12) !important; border-radius: 3px !important; }
++scrollbar thumb:hover { background: rgba(255,255,255,0.22) !important; }
++scrollbar track { background: transparent !important; }
++
++/* ── Reduce motion ── */
++@media (prefers-reduced-motion: reduce) {
++  * { transition: none !important; animation: none !important; }
++}
++
