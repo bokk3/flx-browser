@@ -12,6 +12,6 @@ ac_add_options --disable-updater
 
 # Parallelism — Actions runners have 4 cores
 mk_add_options MOZ_MAKE_FLAGS="-j4"
-
+ac_add_options --with-ccache=sccache
 # Point at your branding folder (once you create it in Part 4)
 # ac_add_options --with-branding=browser/branding/mybrowser
