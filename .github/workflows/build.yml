@@ -51,10 +51,13 @@ jobs:
       - name: Bootstrap
         run: |
           cd firefox
+          MACH_USE_SYSTEM_PYTHON=1 \
+          MOZBUILD_STATE_PATH=/home/runner/.mozbuild \
           python3 ./mach bootstrap \
-            --no-interactive \
             --application-choice browser
-
+        env:
+          SHELL: /bin/bash
+          MOZ_NOSPAM: 1
       # ── 6. Apply your patches in filename order ───────────────
       - name: Apply patches
         run: |
