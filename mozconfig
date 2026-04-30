@@ -1,0 +1,18 @@
+# Application
+ac_add_options --enable-application=browser
+
+# Optimised release build, no debug symbols
+ac_add_options --disable-debug
+ac_add_options --enable-optimize
+
+# Skip things that slow down the build and bloat the binary
+ac_add_options --disable-tests
+ac_add_options --disable-crashreporter
+ac_add_options --disable-updater
+ac_add_options --disable-maintenance-service
+
+# Parallelism — Actions runners have 4 cores
+mk_add_options MOZ_MAKE_FLAGS="-j4"
+
+# Point at your branding folder (once you create it in Part 4)
+# ac_add_options --with-branding=browser/branding/mybrowser

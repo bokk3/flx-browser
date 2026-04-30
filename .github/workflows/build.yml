@@ -1,0 +1,94 @@
+name: Build flx-browser
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # lets you trigger a build manually from the UI
+
+env:
+  FF_TAG: FIREFOX_150_0_1_RELEASE
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+
+    steps:
+      # ── 1. Checkout your patch repo ──────────────────────────
+      - name: Checkout patches
+        uses: actions/checkout@v4
+        with:
+          path: flx-browser
+
+      # ── 2. Clone Firefox at the exact tag ────────────────────
+      #    --depth 1  =  no history, saves ~4 GB
+      - name: Clone Firefox ${{ env.FF_TAG }}
+        run: |
+          git clone --depth 1 \
+            --branch ${{ env.FF_TAG }} \
+            https://github.com/mozilla/firefox firefox
+
+      # ── 3. Cache the Rust/clang toolchain ────────────────────
+      #    First run downloads ~2 GB. Subsequent runs skip this.
+      - name: Cache ~/.mozbuild
+        uses: actions/cache@v4
+        with:
+          path: ~/.mozbuild
+          key: mozbuild-${{ env.FF_TAG }}-ubuntu
+
+      # ── 4. Install system packages ───────────────────────────
+      - name: Install system deps
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y --no-install-recommends \
+            python3 python3-pip \
+            libdbus-glib-1-dev libgtk-3-dev \
+            libx11-dev libxt-dev \
+            nasm nodejs clang lld \
+            zip unzip
+
+      # ── 5. Bootstrap mach (Rust, cbindgen, etc.) ─────────────
+      - name: Bootstrap
+        run: |
+          cd firefox
+          python3 ./mach bootstrap \
+            --no-interactive \
+            --application-choice browser
+
+      # ── 6. Apply your patches in filename order ───────────────
+      - name: Apply patches
+        run: |
+          cd firefox
+          PATCHES=$(ls ../flx-browser/patches/*.patch 2>/dev/null | sort)
+          if [ -z "$PATCHES" ]; then
+            echo "No patches to apply."
+          else
+            for patch in $PATCHES; do
+              echo "── Applying $(basename $patch)"
+              git apply --ignore-whitespace "$patch"
+            done
+          fi
+
+      # ── 7. Copy your mozconfig in ────────────────────────────
+      - name: Copy mozconfig
+        run: cp flx-browser/mozconfig firefox/mozconfig
+
+      # ── 8. Build ──────────────────────────────────────────────
+      - name: Build
+        run: |
+          cd firefox
+          ./mach build
+
+      # ── 9. Package into a tarball ────────────────────────────
+      - name: Package
+        run: |
+          cd firefox
+          ./mach package
+
+      # ── 10. Upload binary as a downloadable artifact ─────────
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flx-browser-linux-${{ env.FF_TAG }}
+          path: firefox/obj-*/dist/*.tar.bz2
+          retention-days: 14
